@@ -28,15 +28,26 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: yarn # npm или pnpm / yarn
       - name: Setup Pages
         uses: actions/configure-pages@v5
-      - name: Build with Jekyll
-        uses: actions/jekyll-build-pages@v1
-        with:
-          source: ./
-          destination: ./_site
+      - name: Install dependencies
+        run: yarn install # npm ci или pnpm install / yarn install / bun install
+      - name: Build with VitePress
+        run: yarn docs:dev # npm run docs:build # или pnpm docs:build / yarn docs:build / bun run docs:build
+      #- name: Build with Jekyll
+      #  uses: actions/jekyll-build-pages@v1
+      #  with:
+      #    source: ./
+      #    destination: ./_site
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/.vitepress/dist
 
   # Deployment job
   deploy:
